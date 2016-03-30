@@ -114,7 +114,6 @@ static void next_click(ClickRecognizerRef recognizer, void *context) {
 		stop_number = 10000 * SLOTS[0] + 1000 * SLOTS[1] + 100 * SLOTS[2] + 10 * SLOTS[3] + SLOTS[4];
 		APP_LOG(APP_LOG_LEVEL_INFO, "Stop number: %d", stop_number);
 		
-		window_stack_pop(false);
 		window_stack_push(loading_window, true);
 		
 		// Begin dictionary
@@ -231,20 +230,21 @@ static void bus_window_load(Window *window) {
 	GRect bounds = layer_get_bounds(window_get_root_layer(window));
 	window_set_background_color(window, GColorVividCerulean);
 	
-	route_name_layer = text_layer_create(GRect(0, 10, bounds.size.w, bounds.size.h));
-	text_layer_set_background_color(route_name_layer, GColorClear);
-	text_layer_set_text(route_name_layer, "Name");
-	
-	route_number_layer = text_layer_create(GRect(0, 30, bounds.size.w, bounds.size.h));
+	route_number_layer = text_layer_create(GRect(0, 10, bounds.size.w, bounds.size.h));
 	text_layer_set_background_color(route_number_layer, GColorClear);
-	text_layer_set_text(route_number_layer, "Number");
+	text_layer_set_text_alignment(route_number_layer, GTextAlignmentCenter);
+	
+	route_name_layer = text_layer_create(GRect(0, 30, bounds.size.w, bounds.size.h));
+	text_layer_set_background_color(route_name_layer, GColorClear);
+	text_layer_set_text_alignment(route_name_layer, GTextAlignmentCenter);
 	
 	arrival_time_layer = text_layer_create(GRect(0, 50, bounds.size.w, bounds.size.h));
 	text_layer_set_background_color(arrival_time_layer, GColorClear);
-	text_layer_set_text(arrival_time_layer, "00");
+	text_layer_set_text_alignment(arrival_time_layer, GTextAlignmentCenter);
 	
-	layer_add_child(window_get_root_layer(window), text_layer_get_layer(route_name_layer));
+	
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(route_number_layer));
+	layer_add_child(window_get_root_layer(window), text_layer_get_layer(route_name_layer));
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(arrival_time_layer));
 }
 
