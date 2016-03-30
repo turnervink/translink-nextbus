@@ -23,20 +23,28 @@ function getSchedule() {
 				console.log("An error occured: " + json.Code);
 			} else {
 				
-				console.log("NextBus: " + json[0].RouteNo);
+				console.log("RouteNo: " + json[0].RouteNo);
 				var route_number = json[0].RouteNo;
 				
 				console.log("RouteName: " + json[0].RouteName);
-				var stop_name = json[0].RouteName;
+				var route_name = json[0].RouteName;
 				
 				console.log("ExpectedCountdown: " + json[0].Schedules[0].ExpectedCountdown);
 				var arrival_time = json[0].Schedules[0].ExpectedCountdown;
 				
-				var dictonary = {
-					"KEY_STOP_NAME": stop_name,
+				var dictionary = {
+					"KEY_ROUTE_NAME": route_name,
 					"KEY_ROUTE_NUMBER": route_number,
 					"KEY_ARRIVAL_TIME": arrival_time
 				};
+				
+				Pebble.sendAppMessage(dictionary,
+					function(e) {
+						console.log("App message sent!");
+					},
+					function(e) {
+						console.log("Error sending app message");
+				});
 				
 			}
 		});

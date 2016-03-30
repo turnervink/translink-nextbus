@@ -1,9 +1,11 @@
 #include <pebble.h>
 #include "messaging.h"
+#include "main.h"
 
-static Window *main_window, *loading_window;
+Window *main_window, *loading_window, *bus_window;
 static TextLayer *slot_one, *slot_two, *slot_three, *slot_four, *slot_five, *loading_text_layer;
-static Layer *indicator_layer, *loading_icon_layer;
+TextLayer *route_name_layer, *route_number_layer, *arrival_time_layer;
+static Layer *loading_icon_layer;
 static GBitmap *loading_icon_bitmap;
 
 static char slot_one_buffer[3], slot_two_buffer[3], slot_three_buffer[3], slot_four_buffer[3], slot_five_buffer[3];
@@ -212,6 +214,31 @@ static void loading_window_unload(Window *window) {
 	
 }
 
+static void bus_window_load(Window *window) {
+	GRect bounds = layer_get_bounds(window_get_root_layer(window));
+	window_set_background_color(window, GColorVividCerulean);
+	
+	route_name_layer = text_layer_create(GRect(0, 10, bounds.size.w, bounds.size.h));
+	text_layer_set_background_color(route_name_layer, GColorClear);
+	text_layer_set_text(route_name_layer, "Name");
+	
+	route_number_layer = text_layer_create(GRect(0, 30, bounds.size.w, bounds.size.h));
+	text_layer_set_background_color(route_number_layer, GColorClear);
+	text_layer_set_text(route_number_layer, "Number");
+	
+	arrival_time_layer = text_layer_create(GRect(0, 50, bounds.size.w, bounds.size.h));
+	text_layer_set_background_color(arrival_time_layer, GColorClear);
+	text_layer_set_text(arrival_time_layer, "00");
+	
+	layer_add_child(window_get_root_layer(window), text_layer_get_layer(route_name_layer));
+	layer_add_child(window_get_root_layer(window), text_layer_get_layer(route_number_layer));
+	layer_add_child(window_get_root_layer(window), text_layer_get_layer(arrival_time_layer));
+}
+
+static void bus_window_unload(Window *window) {
+	
+}
+
 static void init() {
 	main_window = window_create();
 	
@@ -227,6 +254,13 @@ static void init() {
 	window_set_window_handlers(loading_window, (WindowHandlers) {
 		.load = loading_window_load,
 		.unload = loading_window_unload
+	});
+	
+	bus_window = window_create(); 
+	
+	window_set_window_handlers(bus_window, (WindowHandlers) {
+		.load = bus_window_load,
+		.unload = bus_window_unload
 	});
 	
 	window_stack_push(main_window, true);

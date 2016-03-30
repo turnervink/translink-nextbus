@@ -1,7 +1,35 @@
 #include <pebble.h>
+#include "messaging.h"
+#include "main.h"
 
 void inbox_received_handler(DictionaryIterator *iter, void *context) {
 	APP_LOG(APP_LOG_LEVEL_INFO, "Received appmessage");
+	
+	static char route_name_buffer[100];
+	static char route_number_buffer[12];
+	static char arrival_time_buffer[12];
+	
+	Tuple *route_name_tup = dict_find(iter, KEY_ROUTE_NAME);
+	Tuple *route_number_tup = dict_find(iter, KEY_ROUTE_NUMBER);
+	Tuple *arrival_time_tup = dict_find(iter, KEY_ARRIVAL_TIME);
+	
+	if (route_name_tup) {
+		window_stack_pop(false);
+		window_stack_push(bus_window, true);
+		
+		snprintf(route_name_buffer, sizeof(route_name_buffer), "%s", route_name_tup->value->cstring);
+		text_layer_set_text(route_name_layer, route_name_buffer);
+	}
+	
+	if (route_number_tup) {
+		snprintf(route_number_buffer, sizeof(route_number_buffer), "%s", route_number_tup->value->cstring);
+		text_layer_set_text(route_number_layer, route_number_buffer);
+	}
+	
+	if (arrival_time_tup) {
+		snprintf(arrival_time_buffer, sizeof(arrival_time_buffer), "%d", (int)arrival_time_tup->value->int32);
+		text_layer_set_text(arrival_time_layer, arrival_time_buffer);
+	}
 }
 
 void inbox_dropped_callback(AppMessageResult reason, void *context) {

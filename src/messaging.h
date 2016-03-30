@@ -2,6 +2,9 @@
 #include <pebble.h>
 
 #define KEY_STOP_NUMBER 0
+#define KEY_ROUTE_NAME 1
+#define KEY_ROUTE_NUMBER 2
+#define KEY_ARRIVAL_TIME 3
 
 int stop_number;
 
