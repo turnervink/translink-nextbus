@@ -97,6 +97,17 @@ static void update_indicator() {
 	}
 }
 
+static void back_click(ClickRecognizerRef recognizer, void *context) {
+	if (current_slot == 0) {
+		window_stack_pop(false);
+	} else {
+		current_slot = current_slot - 1;
+	}
+	
+	APP_LOG(APP_LOG_LEVEL_INFO, "Current slot is %d", current_slot);
+	update_indicator();
+}
+
 static void next_click(ClickRecognizerRef recognizer, void *context) {
 	APP_LOG(APP_LOG_LEVEL_INFO, "Select button clicked!");
 	if (current_slot == 4) {
@@ -126,12 +137,14 @@ static void next_click(ClickRecognizerRef recognizer, void *context) {
 
 static void click_config_provider(void *context) {
 	ButtonId next = BUTTON_ID_SELECT;
+	ButtonId back = BUTTON_ID_BACK;
 	ButtonId up = BUTTON_ID_UP;
 	ButtonId down = BUTTON_ID_DOWN;
 	
 	window_single_click_subscribe(up, up_click);
 	window_single_click_subscribe(down, down_click);
 	window_single_click_subscribe(next, next_click);
+	window_single_click_subscribe(back, back_click);
 }
 
 static void loading_update_proc(Layer *layer, GContext *ctx) {
