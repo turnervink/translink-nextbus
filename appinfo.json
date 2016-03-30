@@ -1,0 +1,36 @@
+{
+    "appKeys": {
+        "KEY_ARRIVAL_TIME": 3,
+        "KEY_ROUTE_NUMBER": 2,
+        "KEY_STOP_NAME": 1,
+        "KEY_STOP_NUMBER": 0
+    },
+    "capabilities": [
+        ""
+    ],
+    "companyName": "turner.vink@me.com",
+    "enableMultiJS": true,
+    "longName": "Button Clicks",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/nextbusloadingicon.png",
+                "name": "IMAGE_STOP_SIGN",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "Button Clicks",
+    "targetPlatforms": [
+        "basalt",
+        "chalk"
+    ],
+    "uuid": "389f16d3-d31b-4643-b4f8-26fa297a5a5f",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}
