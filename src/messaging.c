@@ -3,6 +3,7 @@
 #include "main.h"
 
 void inbox_received_handler(DictionaryIterator *iter, void *context) {
+	bool error_occured = 0;
 	APP_LOG(APP_LOG_LEVEL_INFO, "Received appmessage");
 	
 	static char route_name_buffer[100];
@@ -12,8 +13,18 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 	Tuple *route_name_tup = dict_find(iter, KEY_ROUTE_NAME);
 	Tuple *route_number_tup = dict_find(iter, KEY_ROUTE_NUMBER);
 	Tuple *arrival_time_tup = dict_find(iter, KEY_ARRIVAL_TIME);
+	Tuple *error_code_tup = dict_find(iter, KEY_ERROR_CODE);
+	
+	if (error_code_tup) {
+		APP_LOG(APP_LOG_LEVEL_INFO, "An error occured");
+		error_occured = 1;
+		window_stack_pop(false);
+		window_stack_push(error_window, true);
+	}
 	
 	if (route_name_tup) {
+		APP_LOG(APP_LOG_LEVEL_INFO, "Route name received");
+		
 		window_stack_pop(false);
 		window_stack_push(bus_window, true);
 		
@@ -22,14 +33,24 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 	}
 	
 	if (route_number_tup) {
+		APP_LOG(APP_LOG_LEVEL_INFO, "Route number received");
 		snprintf(route_number_buffer, sizeof(route_number_buffer), "%s", route_number_tup->value->cstring);
 		text_layer_set_text(route_number_layer, route_number_buffer);
 	}
 	
 	if (arrival_time_tup) {
+		APP_LOG(APP_LOG_LEVEL_INFO, "Arrival time received");
 		snprintf(arrival_time_buffer, sizeof(arrival_time_buffer), "%d", (int)arrival_time_tup->value->int32);
 		text_layer_set_text(arrival_time_layer, arrival_time_buffer);
 	}
+	
+	if (error_occured == 1) {
+		APP_LOG(APP_LOG_LEVEL_INFO, "An error occured");
+	} else {
+		APP_LOG(APP_LOG_LEVEL_INFO, "No error occured");
+		size_layers();
+	}
+	
 }
 
 void inbox_dropped_callback(AppMessageResult reason, void *context) {

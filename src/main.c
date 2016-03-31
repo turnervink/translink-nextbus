@@ -1,10 +1,11 @@
 #include <pebble.h>
 #include "messaging.h"
 #include "main.h"
+#include "bus_window.h"
 
-Window *main_window, *loading_window, *bus_window;
+Window *main_window, *loading_window, *bus_window, *error_window;
 static TextLayer *slot_one, *slot_two, *slot_three, *slot_four, *slot_five, *loading_text_layer;
-TextLayer *route_name_layer, *route_number_layer, *arrival_time_layer;
+TextLayer *route_name_layer, *route_number_layer, *arrival_time_layer, *arrives_in_layer, *minutes_text_layer;
 static Layer *loading_icon_layer;
 static GBitmap *loading_icon_bitmap;
 
@@ -114,6 +115,7 @@ static void next_click(ClickRecognizerRef recognizer, void *context) {
 		stop_number = 10000 * SLOTS[0] + 1000 * SLOTS[1] + 100 * SLOTS[2] + 10 * SLOTS[3] + SLOTS[4];
 		APP_LOG(APP_LOG_LEVEL_INFO, "Stop number: %d", stop_number);
 		
+		window_stack_pop(false);
 		window_stack_push(loading_window, true);
 		
 		// Begin dictionary
@@ -149,6 +151,29 @@ static void click_config_provider(void *context) {
 static void loading_update_proc(Layer *layer, GContext *ctx) {
 	graphics_context_set_compositing_mode(ctx, GCompOpSet);
 	graphics_draw_bitmap_in_rect(ctx, loading_icon_bitmap, gbitmap_get_bounds(loading_icon_bitmap));
+}
+
+void size_layers() {
+	GRect bounds = layer_get_bounds(window_get_root_layer(bus_window));
+	GSize route_number_size = text_layer_get_content_size(route_number_layer);
+	GSize route_name_size = text_layer_get_content_size(route_name_layer);
+	GSize arrival_time_size = text_layer_get_content_size(arrival_time_layer);
+	GSize arrives_in_size = text_layer_get_content_size(arrives_in_layer);
+	GSize minutes_text_size = text_layer_get_content_size(minutes_text_layer);
+	
+	layer_set_frame(text_layer_get_layer(route_number_layer), GRect(0, 3, bounds.size.w, route_number_size.h));
+	GRect route_number_grect = layer_get_frame(text_layer_get_layer(route_number_layer));
+	
+	layer_set_frame(text_layer_get_layer(route_name_layer), GRect(0, route_number_grect.origin.y + route_number_size.h - 3, bounds.size.w, route_name_size.h));
+	GRect route_name_grect = layer_get_frame(text_layer_get_layer(route_name_layer));
+	
+	layer_set_frame(text_layer_get_layer(arrives_in_layer), GRect(0, route_name_grect.origin.y + route_name_grect.size.h + 5, bounds.size.w, arrives_in_size.h));
+	GRect arrives_in_grect = layer_get_frame(text_layer_get_layer(arrives_in_layer));
+	
+	layer_set_frame(text_layer_get_layer(arrival_time_layer), GRect(0, arrives_in_grect.origin.y + arrives_in_size.h - 3, bounds.size.w, arrival_time_size.h));
+	GRect arrival_time_grect = layer_get_frame(text_layer_get_layer(arrival_time_layer));
+	
+	layer_set_frame(text_layer_get_layer(minutes_text_layer), GRect(0, arrival_time_grect.origin.y + arrival_time_size.h + 5, bounds.size.w, minutes_text_size.w));
 }
 
 static void main_window_load(Window *window) {
@@ -213,10 +238,10 @@ static void loading_window_load(Window *window) {
 	layer_add_child(window_get_root_layer(window), loading_icon_layer);
 
 
-	loading_text_layer = text_layer_create(GRect(0, (icon.size.h + 15), 144, 168));
+	loading_text_layer = text_layer_create(GRect(0, (icon.size.h + 15), bounds.size.w, bounds.size.h));
 	text_layer_set_background_color(loading_text_layer, GColorClear);
 	text_layer_set_text_alignment(loading_text_layer, GTextAlignmentCenter);
-	text_layer_set_text(loading_text_layer, "Finding stops");
+	text_layer_set_text(loading_text_layer, "Getting next bus");
 	text_layer_set_text_color(loading_text_layer, GColorWhite);
 
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(loading_text_layer));
@@ -226,29 +251,11 @@ static void loading_window_unload(Window *window) {
 	
 }
 
-static void bus_window_load(Window *window) {
-	GRect bounds = layer_get_bounds(window_get_root_layer(window));
-	window_set_background_color(window, GColorVividCerulean);
-	
-	route_number_layer = text_layer_create(GRect(0, 10, bounds.size.w, bounds.size.h));
-	text_layer_set_background_color(route_number_layer, GColorClear);
-	text_layer_set_text_alignment(route_number_layer, GTextAlignmentCenter);
-	
-	route_name_layer = text_layer_create(GRect(0, 30, bounds.size.w, bounds.size.h));
-	text_layer_set_background_color(route_name_layer, GColorClear);
-	text_layer_set_text_alignment(route_name_layer, GTextAlignmentCenter);
-	
-	arrival_time_layer = text_layer_create(GRect(0, 50, bounds.size.w, bounds.size.h));
-	text_layer_set_background_color(arrival_time_layer, GColorClear);
-	text_layer_set_text_alignment(arrival_time_layer, GTextAlignmentCenter);
-	
-	
-	layer_add_child(window_get_root_layer(window), text_layer_get_layer(route_number_layer));
-	layer_add_child(window_get_root_layer(window), text_layer_get_layer(route_name_layer));
-	layer_add_child(window_get_root_layer(window), text_layer_get_layer(arrival_time_layer));
+void error_window_load(Window *window) {
+	window_set_background_color(window, GColorRed);
 }
 
-static void bus_window_unload(Window *window) {
+void error_window_unload(Window *window) {
 	
 }
 
@@ -269,12 +276,21 @@ static void init() {
 		.unload = loading_window_unload
 	});
 	
+	error_window = window_create();
+	
+	window_set_window_handlers(error_window, (WindowHandlers) {
+		.load = error_window_load,
+		.unload = error_window_unload
+	});
+	
 	bus_window = window_create(); 
 	
 	window_set_window_handlers(bus_window, (WindowHandlers) {
 		.load = bus_window_load,
 		.unload = bus_window_unload
 	});
+	
+	
 	
 	window_stack_push(main_window, true);
 	

@@ -5,6 +5,7 @@
 #define KEY_ROUTE_NAME 1
 #define KEY_ROUTE_NUMBER 2
 #define KEY_ARRIVAL_TIME 3
+#define KEY_ERROR_CODE 4
 
 int stop_number;
 

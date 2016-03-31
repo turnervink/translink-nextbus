@@ -1,6 +1,7 @@
 {
     "appKeys": {
         "KEY_ARRIVAL_TIME": 3,
+        "KEY_ERROR_CODE": 4,
         "KEY_ROUTE_NAME": 1,
         "KEY_ROUTE_NUMBER": 2,
         "KEY_STOP_NUMBER": 0

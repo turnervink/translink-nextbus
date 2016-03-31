@@ -21,13 +21,25 @@ function getSchedule() {
 			
 			if (json.Code) {
 				console.log("An error occured: " + json.Code);
-			} else {
+				var error_code = json.Code;
 				
+				var err_dictionary = {
+					"KEY_ERROR_CODE": error_code
+				};
+				
+				Pebble.sendAppMessage(err_dictionary,
+					function(e) {
+						console.log("App message sent!");
+					},
+					function(e) {
+						console.log("Error sending app message");
+				});
+			} else {
 				console.log("RouteNo: " + json[0].RouteNo);
 				var route_number = json[0].RouteNo;
 				
-				console.log("RouteName: " + json[0].RouteName);
-				var route_name = json[0].RouteName;
+				console.log("RouteName: " + json[0].Schedules[0].Destination);
+				var route_name = json[0].Schedules[0].Destination;
 				
 				console.log("ExpectedCountdown: " + json[0].Schedules[0].ExpectedCountdown);
 				var arrival_time = json[0].Schedules[0].ExpectedCountdown;
@@ -52,6 +64,8 @@ function getSchedule() {
 
 Pebble.addEventListener('ready', function() {
 	console.log('PebbleKit JS Ready!');
+	
+	//getSchedule(); // Testing mode
 });
 
 Pebble.addEventListener('appmessage',
