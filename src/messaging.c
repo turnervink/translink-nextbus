@@ -1,6 +1,7 @@
 #include <pebble.h>
 #include "messaging.h"
 #include "main.h"
+#include "error_window.h"
 
 void inbox_received_handler(DictionaryIterator *iter, void *context) {
 	bool error_occured = 0;
@@ -18,12 +19,41 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 	if (error_code_tup) {
 		APP_LOG(APP_LOG_LEVEL_INFO, "An error occured");
 		error_occured = 1;
+		
+		APP_LOG(APP_LOG_LEVEL_INFO, "Cancelling comm_timer");
+		app_timer_cancel(comm_timer);
+		
 		window_stack_pop(false);
-		window_stack_push(error_window, true);
+		window_stack_push(error_window, true); 
+		
+		if (strcmp(error_code_tup->value->cstring, "10001") == 0) {
+			text_layer_set_text(message_layer, error_messages[0]);
+		} else if (strcmp(error_code_tup->value->cstring, "10002") == 0) {
+			text_layer_set_text(message_layer, error_messages[1]);
+		} else if (strcmp(error_code_tup->value->cstring, "3001") == 0) {
+			text_layer_set_text(message_layer, error_messages[2]);
+		} else if (strcmp(error_code_tup->value->cstring, "3002") == 0) {
+			text_layer_set_text(message_layer, error_messages[3]);
+		} else if (strcmp(error_code_tup->value->cstring, "3003") == 0) {
+			text_layer_set_text(message_layer, error_messages[4]);
+		} else if (strcmp(error_code_tup->value->cstring, "3004") == 0) {
+			text_layer_set_text(message_layer, error_messages[5]);
+		} else if (strcmp(error_code_tup->value->cstring, "3005") == 0) {
+			text_layer_set_text(message_layer, error_messages[6]);
+		} else if (strcmp(error_code_tup->value->cstring, "3006") == 0) {
+			text_layer_set_text(message_layer, error_messages[7]);
+		} else if (strcmp(error_code_tup->value->cstring, "3007") == 0) {
+			text_layer_set_text(message_layer, error_messages[8]);
+		}
+		
+		size_error_message();
 	}
 	
 	if (route_name_tup) {
 		APP_LOG(APP_LOG_LEVEL_INFO, "Route name received");
+		
+		APP_LOG(APP_LOG_LEVEL_INFO, "Cancelling comm_timer");
+		app_timer_cancel(comm_timer);
 		
 		window_stack_pop(false);
 		window_stack_push(bus_window, true);

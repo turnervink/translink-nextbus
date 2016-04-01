@@ -11,7 +11,7 @@
     ],
     "companyName": "turner.vink@me.com",
     "enableMultiJS": true,
-    "longName": "Button Clicks",
+    "longName": "NextBus",
     "projectType": "native",
     "resources": {
         "media": [
@@ -24,8 +24,9 @@
         ]
     },
     "sdkVersion": "3",
-    "shortName": "Button Clicks",
+    "shortName": "NextBus",
     "targetPlatforms": [
+        "aplite",
         "basalt",
         "chalk"
     ],

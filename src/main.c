@@ -2,9 +2,10 @@
 #include "messaging.h"
 #include "main.h"
 #include "bus_window.h"
+#include "error_window.h"
 
 Window *main_window, *loading_window, *bus_window, *error_window;
-static TextLayer *slot_one, *slot_two, *slot_three, *slot_four, *slot_five, *loading_text_layer;
+static TextLayer *slot_one, *slot_two, *slot_three, *slot_four, *slot_five, *loading_text_layer, *instr_text_layer;
 TextLayer *route_name_layer, *route_number_layer, *arrival_time_layer, *arrives_in_layer, *minutes_text_layer;
 static Layer *loading_icon_layer;
 static GBitmap *loading_icon_bitmap;
@@ -115,18 +116,29 @@ static void next_click(ClickRecognizerRef recognizer, void *context) {
 		stop_number = 10000 * SLOTS[0] + 1000 * SLOTS[1] + 100 * SLOTS[2] + 10 * SLOTS[3] + SLOTS[4];
 		APP_LOG(APP_LOG_LEVEL_INFO, "Stop number: %d", stop_number);
 		
-		window_stack_pop(false);
-		window_stack_push(loading_window, true);
-		
-		// Begin dictionary
-		DictionaryIterator *iter;
-		app_message_outbox_begin(&iter);
+		if (stop_number < 10000) {
+			window_stack_pop(false);
+			window_stack_push(error_window, true);
+			
+			text_layer_set_text(message_layer, error_messages[2]);
+			size_error_message();
+		} else {
+			window_stack_pop(false);
+			window_stack_push(loading_window, true);
 
-		// Add a key-value pair
-		dict_write_uint32(iter, 0, stop_number);
+			// Begin dictionary
+			DictionaryIterator *iter;
+			app_message_outbox_begin(&iter);
 
-		// Send the message!
-		app_message_outbox_send();
+			// Add a key-value pair
+			dict_write_uint32(iter, 0, stop_number);
+
+			// Send the message!
+			app_message_outbox_send();
+			
+			APP_LOG(APP_LOG_LEVEL_INFO, "Starting comm_timer");
+			comm_timer = app_timer_register(30000, timeout_callback, NULL);
+		}
 	} else {
 		current_slot = current_slot + 1;
 	}
@@ -167,7 +179,7 @@ void size_layers() {
 	layer_set_frame(text_layer_get_layer(route_name_layer), GRect(0, route_number_grect.origin.y + route_number_size.h - 3, bounds.size.w, route_name_size.h));
 	GRect route_name_grect = layer_get_frame(text_layer_get_layer(route_name_layer));
 	
-	layer_set_frame(text_layer_get_layer(arrives_in_layer), GRect(0, route_name_grect.origin.y + route_name_grect.size.h + 5, bounds.size.w, arrives_in_size.h));
+	layer_set_frame(text_layer_get_layer(arrives_in_layer), GRect(0, route_name_grect.origin.y + route_name_grect.size.h + 10, bounds.size.w, arrives_in_size.h));
 	GRect arrives_in_grect = layer_get_frame(text_layer_get_layer(arrives_in_layer));
 	
 	layer_set_frame(text_layer_get_layer(arrival_time_layer), GRect(0, arrives_in_grect.origin.y + arrives_in_size.h - 3, bounds.size.w, arrival_time_size.h));
@@ -181,18 +193,23 @@ static void main_window_load(Window *window) {
 	
 	slot_one = text_layer_create(GRect(0, 0, 144, 168));
 	text_layer_set_font(slot_one, fonts_get_system_font(FONT_KEY_LECO_32_BOLD_NUMBERS));
+	text_layer_set_text_alignment(slot_one, GTextAlignmentCenter);
 	
 	slot_two = text_layer_create(GRect(10, 0, 144, 168));
 	text_layer_set_font(slot_two, fonts_get_system_font(FONT_KEY_LECO_32_BOLD_NUMBERS));
+	text_layer_set_text_alignment(slot_two, GTextAlignmentCenter);
 	
 	slot_three = text_layer_create(GRect(20, 0, 144, 168));
 	text_layer_set_font(slot_three, fonts_get_system_font(FONT_KEY_LECO_32_BOLD_NUMBERS));
+	text_layer_set_text_alignment(slot_three, GTextAlignmentCenter);
 	
 	slot_four = text_layer_create(GRect(30, 0, 144, 168));
 	text_layer_set_font(slot_four, fonts_get_system_font(FONT_KEY_LECO_32_BOLD_NUMBERS));
+	text_layer_set_text_alignment(slot_four, GTextAlignmentCenter);
 	
 	slot_five = text_layer_create(GRect(40, 0, 144, 168));
 	text_layer_set_font(slot_five, fonts_get_system_font(FONT_KEY_LECO_32_BOLD_NUMBERS));
+	text_layer_set_text_alignment(slot_five, GTextAlignmentCenter);
 	
 	text_layer_set_text(slot_one, "0");
 	text_layer_set_text(slot_two, "0");
@@ -209,15 +226,23 @@ static void main_window_load(Window *window) {
 	GSize slot_size = text_layer_get_content_size(slot_one);
 	GSize centre_slot = text_layer_get_content_size(slot_three);
 	int centre = bounds.size.w / 2 - (slot_size.w / 2);
-	int offset = 3;
+	int offset = 4;
 	
-	layer_set_frame(text_layer_get_layer(slot_one), GRect(centre - (slot_size.w * 2) - (offset * 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w, slot_size.h));
-	layer_set_frame(text_layer_get_layer(slot_two), GRect(centre - slot_size.w - offset, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w, slot_size.h));
-	layer_set_frame(text_layer_get_layer(slot_three), GRect(bounds.size.w / 2 - (slot_size.w / 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w, slot_size.h));
-	layer_set_frame(text_layer_get_layer(slot_four), GRect(centre + slot_size.w + offset, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w, slot_size.h));
-	layer_set_frame(text_layer_get_layer(slot_five), GRect(centre + (slot_size.w * 2) + (offset * 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w, slot_size.h));
+	layer_set_frame(text_layer_get_layer(slot_one), GRect(centre - (slot_size.w * 2) - (offset * 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 4, slot_size.h + 9));
+	layer_set_frame(text_layer_get_layer(slot_two), GRect(centre - slot_size.w - offset, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 4, slot_size.h + 9));
+	layer_set_frame(text_layer_get_layer(slot_three), GRect(bounds.size.w / 2 - (slot_size.w / 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 4, slot_size.h + 9));
+	layer_set_frame(text_layer_get_layer(slot_four), GRect(centre + slot_size.w + offset, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 4, slot_size.h + 9));
+	layer_set_frame(text_layer_get_layer(slot_five), GRect(centre + (slot_size.w * 2) + (offset * 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 4, slot_size.h + 9));
 
 	update_indicator();
+	
+	instr_text_layer = text_layer_create(GRect(0, 40, bounds.size.w, 30));
+	text_layer_set_font(instr_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
+	text_layer_set_text_alignment(instr_text_layer, GTextAlignmentCenter);
+	text_layer_set_background_color(instr_text_layer, GColorClear);
+	text_layer_set_text(instr_text_layer, "Enter a stop number");
+	
+	layer_add_child(window_get_root_layer(window), text_layer_get_layer(instr_text_layer));
 }
 
 static void main_window_unload(Window *window) {
@@ -225,7 +250,7 @@ static void main_window_unload(Window *window) {
 }
 
 static void loading_window_load(Window *window) {
-	window_set_background_color(window, GColorVividCerulean);
+	window_set_background_color(window, PBL_IF_BW_ELSE(GColorBlack, GColorVividCerulean));
 
 	loading_icon_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_STOP_SIGN);
 
@@ -248,14 +273,6 @@ static void loading_window_load(Window *window) {
 }
 
 static void loading_window_unload(Window *window) {
-	
-}
-
-void error_window_load(Window *window) {
-	window_set_background_color(window, GColorRed);
-}
-
-void error_window_unload(Window *window) {
 	
 }
 

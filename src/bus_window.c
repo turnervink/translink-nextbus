@@ -4,7 +4,7 @@
 
 void bus_window_load(Window *window) {
 	GRect bounds = layer_get_bounds(window_get_root_layer(window));
-	window_set_background_color(window, GColorVividCerulean);
+	window_set_background_color(window, PBL_IF_BW_ELSE(GColorBlack, GColorVividCerulean));
 	
 	route_number_layer = text_layer_create(GRect(0, 0, bounds.size.w, bounds.size.h));
 	text_layer_set_font(route_number_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
