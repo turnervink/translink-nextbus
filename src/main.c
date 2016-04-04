@@ -23,6 +23,15 @@ static int SLOTS[5] = {
 static int current_slot = 0;
 int stop_number;
 
+void timeout_callback() {
+	window_stack_pop(false);
+	window_stack_push(error_window, true); 
+	
+	text_layer_set_text(message_layer, error_messages[9]);
+	
+	size_error_message();
+}
+
 static void increment_slot(bool inc_up) {
 	int slot_value = SLOTS[current_slot];
 	APP_LOG(APP_LOG_LEVEL_INFO, "Slot %d is %d", current_slot, slot_value);
@@ -228,12 +237,18 @@ static void main_window_load(Window *window) {
 	int centre = bounds.size.w / 2 - (slot_size.w / 2);
 	int offset = 4;
 	
-	layer_set_frame(text_layer_get_layer(slot_one), GRect(centre - (slot_size.w * 2) - (offset * 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 4, slot_size.h + 9));
-	layer_set_frame(text_layer_get_layer(slot_two), GRect(centre - slot_size.w - offset, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 4, slot_size.h + 9));
-	layer_set_frame(text_layer_get_layer(slot_three), GRect(bounds.size.w / 2 - (slot_size.w / 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 4, slot_size.h + 9));
-	layer_set_frame(text_layer_get_layer(slot_four), GRect(centre + slot_size.w + offset, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 4, slot_size.h + 9));
-	layer_set_frame(text_layer_get_layer(slot_five), GRect(centre + (slot_size.w * 2) + (offset * 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 4, slot_size.h + 9));
+	/*layer_set_frame(text_layer_get_layer(slot_one), GRect(centre - (slot_size.w * 2) - (offset * 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 5, slot_size.h + 9));
+	layer_set_frame(text_layer_get_layer(slot_two), GRect(centre - slot_size.w - offset, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 5, slot_size.h + 9));
+	layer_set_frame(text_layer_get_layer(slot_three), GRect(bounds.size.w / 2 - (slot_size.w / 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 5, slot_size.h + 9));
+	layer_set_frame(text_layer_get_layer(slot_four), GRect(centre + slot_size.w + offset, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 5, slot_size.h + 9));
+	layer_set_frame(text_layer_get_layer(slot_five), GRect(centre + (slot_size.w * 2) + (offset * 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 5, slot_size.h + 9));*/
 
+	layer_set_frame(text_layer_get_layer(slot_one), GRect(centre - (slot_size.w * 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w, slot_size.h + 9));
+	layer_set_frame(text_layer_get_layer(slot_two), GRect(centre - slot_size.w, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w, slot_size.h + 9));
+	layer_set_frame(text_layer_get_layer(slot_three), GRect(centre, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w, slot_size.h + 9));
+	layer_set_frame(text_layer_get_layer(slot_four), GRect(centre + slot_size.w, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w, slot_size.h + 9));
+	layer_set_frame(text_layer_get_layer(slot_five), GRect(centre + (slot_size.w * 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w, slot_size.h + 9));
+	
 	update_indicator();
 	
 	instr_text_layer = text_layer_create(GRect(0, 40, bounds.size.w, 30));
@@ -307,6 +322,7 @@ static void init() {
 		.unload = bus_window_unload
 	});
 	
+	window_set_click_config_provider(bus_window, bus_click_config_provider);
 	
 	
 	window_stack_push(main_window, true);

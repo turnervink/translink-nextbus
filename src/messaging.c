@@ -51,6 +51,7 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 	
 	if (route_name_tup) {
 		APP_LOG(APP_LOG_LEVEL_INFO, "Route name received");
+		vibes_short_pulse();
 		
 		APP_LOG(APP_LOG_LEVEL_INFO, "Cancelling comm_timer");
 		app_timer_cancel(comm_timer);

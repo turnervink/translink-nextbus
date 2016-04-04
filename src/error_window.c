@@ -30,15 +30,6 @@ void size_error_message() {
 	layer_set_frame(text_layer_get_layer(oops_layer), GRect(0, message_grect.origin.y - oops_size.h, bounds.size.w, oops_size.h + 3));
 }
 
-void timeout_callback() {
-	window_stack_pop(false);
-	window_stack_push(error_window, true); 
-	
-	text_layer_set_text(message_layer, error_messages[9]);
-	
-	size_error_message();
-}
-
 void error_window_load(Window *window) {
 	window_set_background_color(window, GColorRed);
 	
