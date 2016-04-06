@@ -8,3 +8,4 @@ char* error_messages[10];
 void error_window_load(Window *window);
 void error_window_unload(Window *window);
 void size_error_message();
+void error_click_config_provider(void *context);

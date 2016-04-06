@@ -30,7 +30,47 @@ void size_error_message() {
 	layer_set_frame(text_layer_get_layer(oops_layer), GRect(0, message_grect.origin.y - oops_size.h, bounds.size.w, oops_size.h + 3));
 }
 
+static void up_click(ClickRecognizerRef recognizer, void *context) {
+	
+}
+
+static void down_click(ClickRecognizerRef recognizer, void *context) {
+	
+}
+static void back_click(ClickRecognizerRef recognizer, void *context) {
+	window_stack_pop(false);
+	window_stack_push(main_window, true);
+}
+
+static void next_click(ClickRecognizerRef recognizer, void *context) {
+	// Begin dictionary
+	DictionaryIterator *iter;
+	app_message_outbox_begin(&iter);
+
+	// Add a key-value pair
+	dict_write_uint32(iter, 0, stop_number);
+
+	// Send the message!
+	app_message_outbox_send();
+
+	APP_LOG(APP_LOG_LEVEL_INFO, "Starting comm_timer");
+	comm_timer = app_timer_register(30000, timeout_callback, NULL);
+}
+
+void error_click_config_provider(void *context) {
+	ButtonId next = BUTTON_ID_SELECT;
+	ButtonId back = BUTTON_ID_BACK;
+	ButtonId up = BUTTON_ID_UP;
+	ButtonId down = BUTTON_ID_DOWN;
+	
+	window_single_click_subscribe(up, up_click);
+	window_single_click_subscribe(down, down_click);
+	window_single_click_subscribe(next, next_click);
+	window_single_click_subscribe(back, back_click);
+}
+
 void error_window_load(Window *window) {
+	vibes_short_pulse();
 	window_set_background_color(window, GColorRed);
 	
 	GRect bounds = layer_get_bounds(window_get_root_layer(window));

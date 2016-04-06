@@ -30,17 +30,16 @@ static void next_click(ClickRecognizerRef recognizer, void *context) {
 
 void bus_click_config_provider(void *context) {
 	ButtonId next = BUTTON_ID_SELECT;
-	ButtonId back = BUTTON_ID_BACK;
 	ButtonId up = BUTTON_ID_UP;
 	ButtonId down = BUTTON_ID_DOWN;
 	
 	window_single_click_subscribe(up, up_click);
 	window_single_click_subscribe(down, down_click);
 	window_single_click_subscribe(next, next_click);
-	window_single_click_subscribe(back, back_click);
 }
 
 void bus_window_load(Window *window) {
+	vibes_double_pulse();
 	GRect bounds = layer_get_bounds(window_get_root_layer(window));
 	window_set_background_color(window, PBL_IF_BW_ELSE(GColorBlack, GColorVividCerulean));
 	
