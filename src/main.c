@@ -7,7 +7,7 @@
 Window *main_window, *loading_window, *bus_window, *error_window;
 static TextLayer *slot_one, *slot_two, *slot_three, *slot_four, *slot_five, *loading_text_layer, *instr_text_layer;
 TextLayer *route_name_layer, *route_number_layer, *arrival_time_layer, *arrives_in_layer, *minutes_text_layer;
-static Layer *loading_icon_layer, *indic_layer;
+static Layer *loading_icon_layer;
 static GBitmap *loading_icon_bitmap;
 
 static char slot_one_buffer[3], slot_two_buffer[3], slot_three_buffer[3], slot_four_buffer[3], slot_five_buffer[3];
@@ -106,12 +106,6 @@ static void update_indicator() {
 		APP_LOG(APP_LOG_LEVEL_INFO, "Indicating slot 4");
 		text_layer_set_background_color(slot_five, GColorVividCerulean);
 	}
-}
-
-static void indic_layer_draw(Layer *layer, GContext *ctx) {
-	GRect pos = layer_get_frame(indic_layer);
-	graphics_context_set_fill_color(ctx, GColorBlack);
-	graphics_fill_circle(ctx, GPoint(pos.origin.x, pos.origin.y), 10);
 }
 
 static void back_click(ClickRecognizerRef recognizer, void *context) {
@@ -226,9 +220,6 @@ static void main_window_load(Window *window) {
 	text_layer_set_font(slot_five, fonts_get_system_font(FONT_KEY_LECO_32_BOLD_NUMBERS));
 	text_layer_set_text_alignment(slot_five, GTextAlignmentCenter);
 	
-	indic_layer = layer_create(GRect(0, 0, bounds.size.w, bounds.size.h));
-	layer_set_update_proc(indic_layer, indic_layer_draw);
-	
 	text_layer_set_text(slot_one, "0");
 	text_layer_set_text(slot_two, "0");
 	text_layer_set_text(slot_three, "0");
@@ -240,28 +231,18 @@ static void main_window_load(Window *window) {
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(slot_three));
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(slot_four));
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(slot_five));
-	layer_add_child(window_get_root_layer(window), indic_layer);
 	
 	GSize slot_size = text_layer_get_content_size(slot_one);
-	GSize centre_slot = text_layer_get_content_size(slot_three);
 	int centre = bounds.size.w / 2 - (slot_size.w / 2);
-	int offset = 4;
-	
-	/*layer_set_frame(text_layer_get_layer(slot_one), GRect(centre - (slot_size.w * 2) - (offset * 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 5, slot_size.h + 9));
-	layer_set_frame(text_layer_get_layer(slot_two), GRect(centre - slot_size.w - offset, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 5, slot_size.h + 9));
-	layer_set_frame(text_layer_get_layer(slot_three), GRect(bounds.size.w / 2 - (slot_size.w / 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 5, slot_size.h + 9));
-	layer_set_frame(text_layer_get_layer(slot_four), GRect(centre + slot_size.w + offset, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 5, slot_size.h + 9));
-	layer_set_frame(text_layer_get_layer(slot_five), GRect(centre + (slot_size.w * 2) + (offset * 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 5, slot_size.h + 9));*/
 
-	layer_set_frame(text_layer_get_layer(slot_one), GRect(centre - (slot_size.w * 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 1, slot_size.h + 9));
-	layer_set_frame(text_layer_get_layer(slot_two), GRect(centre - slot_size.w, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 1, slot_size.h + 9));
-	layer_set_frame(text_layer_get_layer(slot_three), GRect(centre, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 1, slot_size.h + 9));
-	layer_set_frame(text_layer_get_layer(slot_four), GRect(centre + slot_size.w, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 1, slot_size.h + 9));
-	layer_set_frame(text_layer_get_layer(slot_five), GRect(centre + (slot_size.w * 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w + 1, slot_size.h + 9));
+	layer_set_frame(text_layer_get_layer(slot_one), GRect(centre - (slot_size.w * 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w, slot_size.h + 9));
+	layer_set_frame(text_layer_get_layer(slot_two), GRect(centre - slot_size.w, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w, slot_size.h + 9));
+	layer_set_frame(text_layer_get_layer(slot_three), GRect(centre, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w, slot_size.h + 9));
+	layer_set_frame(text_layer_get_layer(slot_four), GRect(centre + slot_size.w, bounds.size.h / 2 - (slot_size.h / 2), slot_size.w, slot_size.h + 9));
+	layer_set_frame(text_layer_get_layer(slot_five), GRect(centre + (slot_size.w * 2), bounds.size.h / 2 - (slot_size.h / 2), slot_size.w, slot_size.h + 9));
 	
-	
-	layer_set_frame(indic_layer, GRect(centre - (slot_size.w * 2), bounds.size.h / 2 + (slot_size.h / 2), slot_size.w + 1, slot_size.h + 9));
 	update_indicator();
+	
 	
 	instr_text_layer = text_layer_create(GRect(0, 40, bounds.size.w, 30));
 	text_layer_set_font(instr_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
