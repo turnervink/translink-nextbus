@@ -34,25 +34,37 @@ void timeout_callback() {
 
 static void increment_slot(bool inc_up) {
 	int slot_value = SLOTS[current_slot];
+	#ifdef SHOW_LOGS
 	APP_LOG(APP_LOG_LEVEL_INFO, "Slot %d is %d", current_slot, slot_value);
+	#endif
 	
 	if (slot_value == 9 && inc_up == true) {
+		#ifdef SHOW_LOGS
 		APP_LOG(APP_LOG_LEVEL_INFO, "Setting slot to 0");
+		#endif
 		slot_value = 0;
 	}	else if (slot_value == 0 && inc_up == false) {
+		#ifdef SHOW_LOGS
 		APP_LOG(APP_LOG_LEVEL_INFO, "Setting slot to 9");
+		#endif
 		slot_value = 9;
 	} else if (inc_up == true) {
+		#ifdef SHOW_LOGS
 		APP_LOG(APP_LOG_LEVEL_INFO, "Moving slot up");
+		#endif
 		slot_value = slot_value + 1;
 	} else if (inc_up == false) {
+		#ifdef SHOW_LOGS
 		APP_LOG(APP_LOG_LEVEL_INFO, "Moving slot down");
+		#endif
 		slot_value = slot_value - 1;
 	}
 	
 	SLOTS[current_slot] = slot_value;
+	#ifdef SHOW_LOGS
 	APP_LOG(APP_LOG_LEVEL_INFO, "slot_value is %d", slot_value);
 	APP_LOG(APP_LOG_LEVEL_INFO, "Stored slot is %d", SLOTS[current_slot]);
+	#endif
 	
 	
 	if (current_slot == 0) {
@@ -74,12 +86,16 @@ static void increment_slot(bool inc_up) {
 }
 
 static void up_click(ClickRecognizerRef recognizer, void *context) {
+	#ifdef SHOW_LOGS
 	APP_LOG(APP_LOG_LEVEL_INFO, "Up button clicked!");
+	#endif
 	increment_slot(true);
 }
 
 static void down_click(ClickRecognizerRef recognizer, void *context) {
+	#ifdef SHOW_LOGS
 	APP_LOG(APP_LOG_LEVEL_INFO, "Down button clicked!");
+	#endif
 	increment_slot(false);
 }
 
@@ -91,19 +107,29 @@ static void update_indicator() {
 	text_layer_set_background_color(slot_five, GColorWhite);
 	
 	if (current_slot == 0) {
+		#ifdef SHOW_LOGS
 		APP_LOG(APP_LOG_LEVEL_INFO, "Indicating slot 0");
+		#endif
 		text_layer_set_background_color(slot_one, GColorVividCerulean);
 	} else if (current_slot == 1) {
+		#ifdef SHOW_LOGS
 		APP_LOG(APP_LOG_LEVEL_INFO, "Indicating slot 1");
+		#endif
 		text_layer_set_background_color(slot_two, GColorVividCerulean);
 	} else if (current_slot == 2) {
+		#ifdef SHOW_LOGS
 		APP_LOG(APP_LOG_LEVEL_INFO, "Indicating slot 2");
+		#endif
 		text_layer_set_background_color(slot_three, GColorVividCerulean);
 	} else if (current_slot == 3) {
+		#ifdef SHOW_LOGS
 		APP_LOG(APP_LOG_LEVEL_INFO, "Indicating slot 3");
+		#endif
 		text_layer_set_background_color(slot_four, GColorVividCerulean);
 	} else if (current_slot == 4) {
+		#ifdef SHOW_LOGS
 		APP_LOG(APP_LOG_LEVEL_INFO, "Indicating slot 4");
+		#endif
 		text_layer_set_background_color(slot_five, GColorVividCerulean);
 	}
 }
@@ -115,14 +141,19 @@ static void back_click(ClickRecognizerRef recognizer, void *context) {
 		current_slot = current_slot - 1;
 	}
 	
+	#ifdef SHOW_LOGS
 	APP_LOG(APP_LOG_LEVEL_INFO, "Current slot is %d", current_slot);
+	#endif
 	update_indicator();
 }
 
 static void next_click(ClickRecognizerRef recognizer, void *context) {
+	#ifdef SHOW_LOGS
 	APP_LOG(APP_LOG_LEVEL_INFO, "Select button clicked!");
+	#endif
 	if (current_slot == 4) {
 		stop_number = 10000 * SLOTS[0] + 1000 * SLOTS[1] + 100 * SLOTS[2] + 10 * SLOTS[3] + SLOTS[4];
+		
 		APP_LOG(APP_LOG_LEVEL_INFO, "Stop number: %d", stop_number);
 		
 		if (stop_number < 10000) {
@@ -151,8 +182,9 @@ static void next_click(ClickRecognizerRef recognizer, void *context) {
 	} else {
 		current_slot = current_slot + 1;
 	}
-	
+	#ifdef SHOW_LOGS
 	APP_LOG(APP_LOG_LEVEL_INFO, "Current slot is %d", current_slot);
+	#endif
 	update_indicator();
 }
 
