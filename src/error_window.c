@@ -38,8 +38,7 @@ static void down_click(ClickRecognizerRef recognizer, void *context) {
 	
 }
 static void back_click(ClickRecognizerRef recognizer, void *context) {
-	window_stack_pop(false);
-	window_stack_push(main_window, true);
+	
 }
 
 static void next_click(ClickRecognizerRef recognizer, void *context) {
@@ -66,7 +65,7 @@ void error_click_config_provider(void *context) {
 	window_single_click_subscribe(up, up_click);
 	window_single_click_subscribe(down, down_click);
 	window_single_click_subscribe(next, next_click);
-	window_single_click_subscribe(back, back_click);
+	//window_single_click_subscribe(back, back_click);
 }
 
 void error_window_load(Window *window) {
