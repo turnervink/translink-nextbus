@@ -16,6 +16,13 @@
     "resources": {
         "media": [
             {
+                "file": "images/nextbus_compass_icon_small.png",
+                "menuIcon": true,
+                "name": "IMAGE_ICON",
+                "targetPlatforms": null,
+                "type": "bitmap"
+            },
+            {
                 "file": "images/nextbusloadingicon.png",
                 "name": "IMAGE_STOP_SIGN",
                 "targetPlatforms": null,

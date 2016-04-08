@@ -72,6 +72,7 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 		APP_LOG(APP_LOG_LEVEL_INFO, "Arrival time received");
 		snprintf(arrival_time_buffer, sizeof(arrival_time_buffer), "%d", (int)arrival_time_tup->value->int32);
 		text_layer_set_text(arrival_time_layer, arrival_time_buffer);
+		//text_layer_set_text(arrival_time_layer, "15");
 	}
 	
 	if (error_occured == 1) {
