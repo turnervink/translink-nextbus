@@ -3,6 +3,8 @@
 #include "main.h"
 #include "bus_window.h"
 #include "error_window.h"
+#include "pin_window.h"
+#include "selection_layer.h"
 
 Window *main_window, *loading_window, *bus_window, *error_window;
 static TextLayer *slot_one, *slot_two, *slot_three, *slot_four, *slot_five, *loading_text_layer, *instr_text_layer;
@@ -188,6 +190,30 @@ static void next_click(ClickRecognizerRef recognizer, void *context) {
 	update_indicator();
 }
 
+static void pin_complete_callback(PIN pin, void *context) {
+  APP_LOG(APP_LOG_LEVEL_INFO, "Pin was %d %d %d %d %d", pin.digits[0], pin.digits[1], pin.digits[2], pin.digits[3], pin.digits[4]);
+  pin_window_pop((PinWindow*)context, true);
+	
+	stop_number = 10000 * pin.digits[0] + 1000 * pin.digits[1] + 100 * pin.digits[2] + 10 * pin.digits[3] + pin.digits[4];
+	APP_LOG(APP_LOG_LEVEL_INFO, "Stop number: %d", stop_number);
+	
+	window_stack_pop(false);
+	window_stack_push(loading_window, true);
+
+	// Begin dictionary
+	DictionaryIterator *iter;
+	app_message_outbox_begin(&iter);
+
+	// Add a key-value pair
+	dict_write_uint32(iter, 0, stop_number);
+
+	// Send the message!
+	app_message_outbox_send();
+
+	APP_LOG(APP_LOG_LEVEL_INFO, "Starting comm_timer");
+	comm_timer = app_timer_register(30000, timeout_callback, NULL);
+}
+
 
 static void click_config_provider(void *context) {
 	ButtonId next = BUTTON_ID_SELECT;
@@ -229,7 +255,7 @@ void size_layers() {
 	layer_set_frame(text_layer_get_layer(minutes_text_layer), GRect(0, arrival_time_grect.origin.y + arrival_time_size.h + 5, bounds.size.w, minutes_text_size.w));
 }
 
-static void main_window_load(Window *window) {
+/*static void main_window_load(Window *window) {
 	GRect bounds = layer_get_bounds(window_get_root_layer(window));
 	
 	slot_one = text_layer_create(GRect(0, 0, 144, 168));
@@ -283,6 +309,10 @@ static void main_window_load(Window *window) {
 	text_layer_set_text(instr_text_layer, "Enter a stop number");
 	
 	layer_add_child(window_get_root_layer(window), text_layer_get_layer(instr_text_layer));
+}*/
+
+static void main_window_load(Window *window) {	
+	
 }
 
 static void main_window_unload(Window *window) {
@@ -324,7 +354,11 @@ static void init() {
 		.unload = main_window_unload
 	});
 	
-	window_set_click_config_provider(main_window, click_config_provider);
+	PinWindow *pin_window = pin_window_create((PinWindowCallbacks) {
+		.pin_complete = pin_complete_callback
+	});
+	
+	//window_set_click_config_provider(main_window, click_config_provider);
 	
 	loading_window = window_create();
 	
@@ -352,7 +386,8 @@ static void init() {
 	window_set_click_config_provider(bus_window, bus_click_config_provider);
 	
 	
-	window_stack_push(main_window, true);
+	//window_stack_push(main_window, true);
+	pin_window_push(pin_window, true);
 	
 	init_appmessage();
 }
