@@ -7,7 +7,7 @@
         "KEY_STOP_NUMBER": 0
     },
     "capabilities": [
-        ""
+        "location"
     ],
     "companyName": "turner.vink@me.com",
     "enableMultiJS": true,

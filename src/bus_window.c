@@ -9,9 +9,6 @@ static void up_click(ClickRecognizerRef recognizer, void *context) {
 static void down_click(ClickRecognizerRef recognizer, void *context) {
 	
 }
-static void back_click(ClickRecognizerRef recognizer, void *context) {
-	
-}
 
 static void next_click(ClickRecognizerRef recognizer, void *context) {
 	// Begin dictionary

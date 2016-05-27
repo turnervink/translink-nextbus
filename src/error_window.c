@@ -2,8 +2,6 @@
 #include "main.h"
 #include "error_window.h"
 
-TextLayer *oops_layer, *message_layer;
-
 char* error_messages[10] = { 
 	"Invalid API key, please email the developer!", // Invalid API key
 	"Couldn't connect to TransLink", // Database connection error
@@ -37,28 +35,13 @@ static void up_click(ClickRecognizerRef recognizer, void *context) {
 static void down_click(ClickRecognizerRef recognizer, void *context) {
 	
 }
-static void back_click(ClickRecognizerRef recognizer, void *context) {
-	
-}
 
 static void next_click(ClickRecognizerRef recognizer, void *context) {
-	// Begin dictionary
-	DictionaryIterator *iter;
-	app_message_outbox_begin(&iter);
-
-	// Add a key-value pair
-	dict_write_uint32(iter, 0, stop_number);
-
-	// Send the message!
-	app_message_outbox_send();
-
-	APP_LOG(APP_LOG_LEVEL_INFO, "Starting comm_timer");
-	comm_timer = app_timer_register(30000, timeout_callback, NULL);
+	
 }
 
 void error_click_config_provider(void *context) {
 	ButtonId next = BUTTON_ID_SELECT;
-	ButtonId back = BUTTON_ID_BACK;
 	ButtonId up = BUTTON_ID_UP;
 	ButtonId down = BUTTON_ID_DOWN;
 	

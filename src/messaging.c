@@ -1,6 +1,6 @@
 #include <pebble.h>
-#include "messaging.h"
 #include "main.h"
+#include "messaging.h"
 #include "error_window.h"
 
 void inbox_received_handler(DictionaryIterator *iter, void *context) {
