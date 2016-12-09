@@ -15,10 +15,10 @@ int i, mult;
 static void pin_complete_callback(PIN pin, void *context) {
   APP_LOG(APP_LOG_LEVEL_INFO, "Pin was %d %d %d %d %d", pin.digits[0], pin.digits[1], pin.digits[2], pin.digits[3], pin.digits[4]);
   pin_window_pop((PinWindow*)context, true);
-	
+
 	stop_number = 10000 * pin.digits[0] + 1000 * pin.digits[1] + 100 * pin.digits[2] + 10 * pin.digits[3] + pin.digits[4];
 	APP_LOG(APP_LOG_LEVEL_INFO, "Stop number: %d", stop_number);
-	
+
 	window_stack_pop(false);
 	window_stack_push(loading_window, true);
 
@@ -38,10 +38,10 @@ static void pin_complete_callback(PIN pin, void *context) {
 
 void timeout_callback() {
 	window_stack_pop(false);
-	window_stack_push(error_window, true); 
-	
+	window_stack_push(error_window, true);
+
 	text_layer_set_text(message_layer, error_messages[9]);
-	
+
 	size_error_message();
 }
 
@@ -57,19 +57,19 @@ void size_layers() {
 	GSize arrival_time_size = text_layer_get_content_size(arrival_time_layer);
 	GSize arrives_in_size = text_layer_get_content_size(arrives_in_layer);
 	GSize minutes_text_size = text_layer_get_content_size(minutes_text_layer);
-	
+
 	layer_set_frame(text_layer_get_layer(route_number_layer), GRect(0, 3, bounds.size.w, route_number_size.h));
 	GRect route_number_grect = layer_get_frame(text_layer_get_layer(route_number_layer));
-	
+
 	layer_set_frame(text_layer_get_layer(route_name_layer), GRect(0, route_number_grect.origin.y + route_number_size.h - 3, bounds.size.w, route_name_size.h));
 	GRect route_name_grect = layer_get_frame(text_layer_get_layer(route_name_layer));
-	
+
 	layer_set_frame(text_layer_get_layer(arrives_in_layer), GRect(0, route_name_grect.origin.y + route_name_grect.size.h + 10, bounds.size.w, arrives_in_size.h));
 	GRect arrives_in_grect = layer_get_frame(text_layer_get_layer(arrives_in_layer));
-	
+
 	layer_set_frame(text_layer_get_layer(arrival_time_layer), GRect(0, arrives_in_grect.origin.y + arrives_in_size.h - 3, bounds.size.w, arrival_time_size.h));
 	GRect arrival_time_grect = layer_get_frame(text_layer_get_layer(arrival_time_layer));
-	
+
 	layer_set_frame(text_layer_get_layer(minutes_text_layer), GRect(0, arrival_time_grect.origin.y + arrival_time_size.h + 5, bounds.size.w, minutes_text_size.w));
 }
 
@@ -97,41 +97,41 @@ static void loading_window_load(Window *window) {
 }
 
 static void loading_window_unload(Window *window) {
-	
+
 }
 
 static void init() {
 	PinWindow *pin_window = pin_window_create((PinWindowCallbacks) {
 		.pin_complete = pin_complete_callback
 	});
-	
+
 	loading_window = window_create();
-	
+
 	window_set_window_handlers(loading_window, (WindowHandlers) {
 		.load = loading_window_load,
 		.unload = loading_window_unload
 	});
-	
+
 	error_window = window_create();
-	
+
 	window_set_window_handlers(error_window, (WindowHandlers) {
 		.load = error_window_load,
 		.unload = error_window_unload
 	});
-	
+
 	window_set_click_config_provider(error_window, error_click_config_provider);
-	
-	bus_window = window_create(); 
-	
+
+	bus_window = window_create();
+
 	window_set_window_handlers(bus_window, (WindowHandlers) {
 		.load = bus_window_load,
 		.unload = bus_window_unload
 	});
-	
+
 	window_set_click_config_provider(bus_window, bus_click_config_provider);
-	
+
 	pin_window_push(pin_window, true);
-	
+
 	init_appmessage();
 }
 
