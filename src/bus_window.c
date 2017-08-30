@@ -2,6 +2,10 @@
 #include "main.h"
 #include "bus_window.h"
 
+ScrollLayer *scroll_layer;
+ContentIndicator *indicator;
+Layer *up_indicator_layer, *down_indicator_layer;
+
 static void up_click(ClickRecognizerRef recognizer, void *context) {
 
 }
@@ -37,8 +41,42 @@ void bus_click_config_provider(void *context) {
 
 void bus_window_load(Window *window) {
 	vibes_double_pulse();
+
 	GRect bounds = layer_get_bounds(window_get_root_layer(window));
 	window_set_background_color(window, PBL_IF_BW_ELSE(GColorBlack, GColorVividCerulean));
+
+	scroll_layer = scroll_layer_create(GRect(0, 0, bounds.size.w, bounds.size.h));
+	scroll_layer_set_shadow_hidden(scroll_layer, true);
+
+	indicator = scroll_layer_get_content_indicator(scroll_layer);
+  up_indicator_layer = layer_create(GRect(bounds.origin.x, bounds.origin.y,
+                                      bounds.size.w, STATUS_BAR_LAYER_HEIGHT));
+  down_indicator_layer = layer_create(GRect(0, bounds.size.h - STATUS_BAR_LAYER_HEIGHT,
+                                        bounds.size.w, STATUS_BAR_LAYER_HEIGHT));
+
+	const ContentIndicatorConfig up_config = (ContentIndicatorConfig) {
+    .layer = up_indicator_layer,
+    .times_out = false,
+    .alignment = GAlignCenter,
+    .colors = {
+      .foreground = GColorWhite,
+      .background = PBL_IF_BW_ELSE(GColorBlack, GColorVividCerulean)
+    }
+  };
+  content_indicator_configure_direction(indicator, ContentIndicatorDirectionUp,
+                                        &up_config);
+
+  const ContentIndicatorConfig down_config = (ContentIndicatorConfig) {
+    .layer = down_indicator_layer,
+    .times_out = false,
+    .alignment = GAlignCenter,
+    .colors = {
+      .foreground = GColorWhite,
+      .background = PBL_IF_BW_ELSE(GColorBlack, GColorVividCerulean)
+    }
+  };
+  content_indicator_configure_direction(indicator, ContentIndicatorDirectionDown,
+                                        &down_config);
 
 	route_number_layer = text_layer_create(GRect(0, 0, bounds.size.w, bounds.size.h));
 	text_layer_set_font(route_number_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
@@ -73,11 +111,21 @@ void bus_window_load(Window *window) {
 	text_layer_set_text_color(minutes_text_layer, GColorWhite);
 	text_layer_set_text(minutes_text_layer, "minutes");
 
-	layer_add_child(window_get_root_layer(window), text_layer_get_layer(route_number_layer));
-	layer_add_child(window_get_root_layer(window), text_layer_get_layer(route_name_layer));
-	layer_add_child(window_get_root_layer(window), text_layer_get_layer(arrival_time_layer));
-	layer_add_child(window_get_root_layer(window), text_layer_get_layer(arrives_in_layer));
-	layer_add_child(window_get_root_layer(window), text_layer_get_layer(minutes_text_layer));
+	// layer_add_child(window_get_root_layer(window), text_layer_get_layer(route_number_layer));
+	// layer_add_child(window_get_root_layer(window), text_layer_get_layer(route_name_layer));
+	// layer_add_child(window_get_root_layer(window), text_layer_get_layer(arrival_time_layer));
+	// layer_add_child(window_get_root_layer(window), text_layer_get_layer(arrives_in_layer));
+	// layer_add_child(window_get_root_layer(window), text_layer_get_layer(minutes_text_layer));
+	scroll_layer_add_child(scroll_layer, text_layer_get_layer(route_number_layer));
+	scroll_layer_add_child(scroll_layer, text_layer_get_layer(route_name_layer));
+	scroll_layer_add_child(scroll_layer, text_layer_get_layer(arrival_time_layer));
+	scroll_layer_add_child(scroll_layer, text_layer_get_layer(arrives_in_layer));
+	scroll_layer_add_child(scroll_layer, text_layer_get_layer(minutes_text_layer));
+	layer_add_child(window_get_root_layer(window), scroll_layer_get_layer(scroll_layer));
+	layer_add_child(window_get_root_layer(window), up_indicator_layer);
+  layer_add_child(window_get_root_layer(window), down_indicator_layer);
+	scroll_layer_set_content_size(scroll_layer, GSize(bounds.size.w, bounds.size.h * 2));
+	scroll_layer_set_click_config_onto_window(scroll_layer, window);
 }
 
 void bus_window_unload(Window *window) {
