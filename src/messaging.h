@@ -14,6 +14,12 @@ typedef enum {
   MsgKeyRoute0,
   MsgKeyName0,
   MsgKeyCountdown0,
+  MsgKeyRoute1,
+  MsgKeyName1,
+  MsgKeyCountdown1,
+  MsgKeyRoute2,
+  MsgKeyName2,
+  MsgKeyCountdown2,
   MsgKeyDummy,
 
   MsgKeyCount

@@ -51,26 +51,93 @@ static void loading_update_proc(Layer *layer, GContext *ctx) {
 }
 
 void size_layers() {
-	GRect bounds = layer_get_bounds(window_get_root_layer(bus_window));
-	GSize route_number_size = text_layer_get_content_size(route_number_layer);
-	GSize route_name_size = text_layer_get_content_size(route_name_layer);
-	GSize arrival_time_size = text_layer_get_content_size(arrival_time_layer);
-	GSize arrives_in_size = text_layer_get_content_size(arrives_in_layer);
-	GSize minutes_text_size = text_layer_get_content_size(minutes_text_layer);
+	// GRect bounds = layer_get_bounds(window_get_root_layer(bus_window));
+	// GSize route_number_size = text_layer_get_content_size(route_number_layer);
+	// GSize route_name_size = text_layer_get_content_size(route_name_layer);
+	// GSize arrival_time_size = text_layer_get_content_size(arrival_time_layer);
+	// GSize arrives_in_size = text_layer_get_content_size(arrives_in_layer);
+	// GSize minutes_text_size = text_layer_get_content_size(minutes_text_layer);
+  //
+	// layer_set_frame(text_layer_get_layer(route_number_layer), GRect(0, 3, bounds.size.w, route_number_size.h));
+	// GRect route_number_grect = layer_get_frame(text_layer_get_layer(route_number_layer));
+  //
+	// layer_set_frame(text_layer_get_layer(route_name_layer), GRect(0, route_number_grect.origin.y + route_number_size.h - 3, bounds.size.w, route_name_size.h));
+	// GRect route_name_grect = layer_get_frame(text_layer_get_layer(route_name_layer));
+  //
+	// layer_set_frame(text_layer_get_layer(arrives_in_layer), GRect(0, route_name_grect.origin.y + route_name_grect.size.h + 10, bounds.size.w, arrives_in_size.h));
+	// GRect arrives_in_grect = layer_get_frame(text_layer_get_layer(arrives_in_layer));
+  //
+	// layer_set_frame(text_layer_get_layer(arrival_time_layer), GRect(0, arrives_in_grect.origin.y + arrives_in_size.h - 3, bounds.size.w, arrival_time_size.h));
+	// GRect arrival_time_grect = layer_get_frame(text_layer_get_layer(arrival_time_layer));
+  //
+	// layer_set_frame(text_layer_get_layer(minutes_text_layer), GRect(0, arrival_time_grect.origin.y + arrival_time_size.h + 5, bounds.size.w, minutes_text_size.w));
 
-	layer_set_frame(text_layer_get_layer(route_number_layer), GRect(0, 3, bounds.size.w, route_number_size.h));
-	GRect route_number_grect = layer_get_frame(text_layer_get_layer(route_number_layer));
+  GRect bounds = layer_get_bounds(window_get_root_layer(bus_window));
+  GSize route0size = text_layer_get_content_size(bus0route);
+  GSize name0size = text_layer_get_content_size(bus0name);
+  GSize countdown0size = text_layer_get_content_size(bus0countdown);
+  GSize mintxtsize = text_layer_get_content_size(min_txt_layer);
 
-	layer_set_frame(text_layer_get_layer(route_name_layer), GRect(0, route_number_grect.origin.y + route_number_size.h - 3, bounds.size.w, route_name_size.h));
-	GRect route_name_grect = layer_get_frame(text_layer_get_layer(route_name_layer));
+  GSize route1size = text_layer_get_content_size(bus1route);
+  GSize name1size = text_layer_get_content_size(bus1name);
+  GSize countdown1size = text_layer_get_content_size(bus1countdown);
 
-	layer_set_frame(text_layer_get_layer(arrives_in_layer), GRect(0, route_name_grect.origin.y + route_name_grect.size.h + 10, bounds.size.w, arrives_in_size.h));
-	GRect arrives_in_grect = layer_get_frame(text_layer_get_layer(arrives_in_layer));
+  // Bus 0
+  layer_set_frame(text_layer_get_layer(bus0route), GRect(
+    0,
+    3,
+    bounds.size.w,
+    route0size.h
+  ));
+  GRect route0grect = layer_get_frame(text_layer_get_layer(bus0route));
 
-	layer_set_frame(text_layer_get_layer(arrival_time_layer), GRect(0, arrives_in_grect.origin.y + arrives_in_size.h - 3, bounds.size.w, arrival_time_size.h));
-	GRect arrival_time_grect = layer_get_frame(text_layer_get_layer(arrival_time_layer));
+  layer_set_frame(text_layer_get_layer(bus0name), GRect(
+    0,
+    route0grect.origin.y + route0size.h,
+    bounds.size.w,
+    name0size.h
+  ));
+  GRect name0grect = layer_get_frame(text_layer_get_layer(bus0name));
 
-	layer_set_frame(text_layer_get_layer(minutes_text_layer), GRect(0, arrival_time_grect.origin.y + arrival_time_size.h + 5, bounds.size.w, minutes_text_size.w));
+  layer_set_frame(text_layer_get_layer(bus0countdown), GRect(
+    0,
+    name0grect.origin.y + name0size.h + 3,
+    bounds.size.w,
+    countdown0size.h
+  ));
+  GRect countdown0grect = layer_get_frame(text_layer_get_layer(bus0countdown));
+
+  layer_set_frame(text_layer_get_layer(min_txt_layer), GRect(
+    0,
+    countdown0grect.origin.y + countdown0size.h,
+    bounds.size.w,
+    mintxtsize.h
+  ));
+  GRect mintxtgrect = layer_get_frame(text_layer_get_layer(min_txt_layer));
+
+  // Bus 1
+  layer_set_frame(text_layer_get_layer(bus1route), GRect(
+    5,
+    mintxtgrect.origin.y + mintxtsize.h + 15,
+    bounds.size.w - 5,
+    route1size.h
+  ));
+  GRect route1grect = layer_get_frame(text_layer_get_layer(bus1route));
+
+  layer_set_frame(text_layer_get_layer(bus1name), GRect(
+    5,
+    route1grect.origin.y + route1size.h,
+    bounds.size.w - 5,
+    name1size.h
+  ));
+  GRect name1grect = layer_get_frame(text_layer_get_layer(bus1name));
+
+  layer_set_frame(text_layer_get_layer(bus1countdown), GRect(
+    5,
+    name1grect.origin.y + name1size.h,
+    bounds.size.w - 5,
+    countdown1size.h
+  ));
 }
 
 static void loading_window_load(Window *window) {
