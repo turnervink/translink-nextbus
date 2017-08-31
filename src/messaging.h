@@ -6,6 +6,15 @@
 #define KEY_ROUTE_NUMBER 2
 #define KEY_ARRIVAL_TIME 3
 #define KEY_ERROR_CODE 4
+#define KEY_TEST 5
+
+typedef enum {
+  MsgKeyStopNumber,
+  MsgKeyErrorCode,
+  MsgKeyDummy,
+
+  MsgKeyCount
+} CfgKey;
 
 int stop_number;
 

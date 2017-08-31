@@ -1,0 +1,52 @@
+{
+  "version": "1.0.0",
+  "author": "turner.vink@me.com",
+  "private": true,
+  "dependencies": {},
+  "keywords": [
+    "pebble-app"
+  ],
+  "pebble": {
+    "sdkVersion": "3",
+    "resources": {
+      "media": [
+        {
+          "type": "bitmap",
+          "menuIcon": true,
+          "targetPlatforms": null,
+          "name": "IMAGE_ICON",
+          "file": "images/nextbus_compass_icon_small.png"
+        },
+        {
+          "targetPlatforms": null,
+          "type": "bitmap",
+          "name": "IMAGE_STOP_SIGN",
+          "file": "images/nextbusloadingicon.png"
+        }
+      ]
+    },
+    "projectType": "native",
+    "uuid": "389f16d3-d31b-4643-b4f8-26fa297a5a5f",
+    "messageKeys": [
+      "MsgKeyStopNumber",
+      "MsgKeyErrorCode",
+      "MsgKeyDummy"
+    ],
+    "enableMultiJS": true,
+    "displayName": "NextBus",
+    "watchapp": {
+      "onlyShownOnCommunication": false,
+      "hiddenApp": false,
+      "watchface": false
+    },
+    "targetPlatforms": [
+      "aplite",
+      "basalt",
+      "chalk"
+    ],
+    "capabilities": [
+      "location"
+    ]
+  },
+  "name": "NextBus"
+}

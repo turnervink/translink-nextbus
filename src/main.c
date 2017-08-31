@@ -27,7 +27,7 @@ static void pin_complete_callback(PIN pin, void *context) {
 	app_message_outbox_begin(&iter);
 
 	// Add a key-value pair
-	dict_write_uint32(iter, 0, stop_number);
+	dict_write_uint32(iter, MESSAGE_KEY_MsgKeyStopNumber, stop_number);
 
 	// Send the message!
 	app_message_outbox_send();
