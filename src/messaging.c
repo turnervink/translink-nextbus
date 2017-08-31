@@ -43,23 +43,46 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 				size_error_message();
 		}
 
+		// Bus 0 info
 		if (key == MsgKeyRoute0) {
 			window_stack_pop(false);
 			window_stack_push(bus_window, true);
 
 			bus0[0] = t->value->cstring;
-			text_layer_set_text(route_number_layer, bus0[0]);
 		}
 
 		if (key == MsgKeyName0) {
 			bus0[1] = t->value->cstring;
-			text_layer_set_text(route_name_layer, bus0[1]);
 		}
 
 		if (key == MsgKeyCountdown0) {
-			// snprintf(bus0[2], sizeof(bus0[2]), "%d", (int)t->value->int32);
 			bus0[2] = t->value->cstring;
-			text_layer_set_text(arrival_time_layer, bus0[2]);
+		}
+
+		// Bus 1 info
+		if (key == MsgKeyRoute1) {
+			bus1[0] = t->value->cstring;
+		}
+
+		if (key == MsgKeyName1) {
+			bus1[1] = t->value->cstring;
+		}
+
+		if (key == MsgKeyCountdown1) {
+			bus1[2] = t->value->cstring;
+		}
+
+		// Bus 2 info
+		if (key == MsgKeyRoute2) {
+			bus2[0] = t->value->cstring;
+		}
+
+		if (key == MsgKeyName0) {
+			bus2[1] = t->value->cstring;
+		}
+
+		if (key == MsgKeyCountdown0) {;
+			bus0[2] = t->value->cstring;
 		}
 
 		t = dict_read_next(iter);
