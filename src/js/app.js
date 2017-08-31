@@ -9,6 +9,9 @@ var xhrRequest = function (url, type, callback) {
 };
 
 var stop;
+var routes = [];
+var names = [];
+var countdowns = [];
 
 function getSchedule() {
 	var url = 'http://api.translink.ca/rttiapi/v1/stops/' + stop + '/estimates?apikey=hCnIQTl1g1LNlWOZhEfa&count=3';
@@ -75,9 +78,32 @@ function getSchedule() {
 					function(e) {
 						console.log("Error sending app message");
 				});
-        
+
       } else {
         console.log("Buses returned: " + json.length);
+
+        for (i = 0; i < json.length; i++) {
+            routes.push(json[i].RouteNo);
+            names.push(json[i].Schedules[0].Destination);
+            countdowns.push(json[i].Schedules[0].ExpectedCountdown);
+        }
+
+        var dict = {};
+
+        for (i = 0; i < json.length; i++) {
+          dict["MsgKeyRoute" + i] = routes[i];
+          dict["MsgKeyName" + i] = names[i];
+          dict["MsgKeyCountdown" + i] = countdowns[i].toString();
+        }
+
+        Pebble.sendAppMessage(dict,
+					function(e) {
+						console.log("App message sent!");
+					},
+					function(e) {
+						console.log("Error sending app message");
+				});
+
       }
 		});
 }

@@ -6,6 +6,8 @@
 void inbox_received_handler(DictionaryIterator *iter, void *context) {
 	bool error_occured = 0;
 	APP_LOG(APP_LOG_LEVEL_INFO, "Received messagekeys");
+	APP_LOG(APP_LOG_LEVEL_INFO, "Cancelling comm_timer");
+	app_timer_cancel(comm_timer);
 
 	Tuple *t = dict_read_first(iter);
 	while(t) {
@@ -14,9 +16,6 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 		if (key == MsgKeyErrorCode) {
 			APP_LOG(APP_LOG_LEVEL_INFO, "An error occured");
 				// error_occured = 1;
-
-				APP_LOG(APP_LOG_LEVEL_INFO, "Cancelling comm_timer");
-				app_timer_cancel(comm_timer);
 
 				window_stack_pop(false);
 				window_stack_push(error_window, true);
@@ -42,6 +41,25 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 				}
 
 				size_error_message();
+		}
+
+		if (key == MsgKeyRoute0) {
+			window_stack_pop(false);
+			window_stack_push(bus_window, true);
+
+			bus0[0] = t->value->cstring;
+			text_layer_set_text(route_number_layer, bus0[0]);
+		}
+
+		if (key == MsgKeyName0) {
+			bus0[1] = t->value->cstring;
+			text_layer_set_text(route_name_layer, bus0[1]);
+		}
+
+		if (key == MsgKeyCountdown0) {
+			// snprintf(bus0[2], sizeof(bus0[2]), "%d", (int)t->value->int32);
+			bus0[2] = t->value->cstring;
+			text_layer_set_text(arrival_time_layer, bus0[2]);
 		}
 
 		t = dict_read_next(iter);

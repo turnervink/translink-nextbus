@@ -11,12 +11,18 @@
 typedef enum {
   MsgKeyStopNumber,
   MsgKeyErrorCode,
+  MsgKeyRoute0,
+  MsgKeyName0,
+  MsgKeyCountdown0,
   MsgKeyDummy,
 
   MsgKeyCount
 } CfgKey;
 
 int stop_number;
+char* bus0[3];
+char* bus1[3];
+char* bus2[3];
 
 void init_appmessage();
 
