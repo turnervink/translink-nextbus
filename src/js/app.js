@@ -96,6 +96,10 @@ function getSchedule() {
           dict["MsgKeyCountdown" + i] = countdowns[i].toString();
         }
 
+        dict["MsgKeyDummy"] = "dummy";
+
+        console.log("Dict: " + JSON.stringify(dict));
+
         Pebble.sendAppMessage(dict,
 					function(e) {
 						console.log("App message sent!");

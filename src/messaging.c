@@ -12,6 +12,7 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 	Tuple *t = dict_read_first(iter);
 	while(t) {
 		int key = t->key - 10000;
+		APP_LOG(APP_LOG_LEVEL_INFO, t->value->cstring);
 
 		if (key == MsgKeyErrorCode) {
 			APP_LOG(APP_LOG_LEVEL_INFO, "An error occured");
@@ -43,52 +44,86 @@ void inbox_received_handler(DictionaryIterator *iter, void *context) {
 				size_error_message();
 		}
 
+		// TODO skip the array thing
 		// Bus 0 info
 		if (key == MsgKeyRoute0) {
 			window_stack_pop(false);
 			window_stack_push(bus_window, true);
 
-			bus0[0] = t->value->cstring;
-			text_layer_set_text(bus0route, bus0[0]);
+			// bus0[0] = t->value->cstring;
+			// text_layer_set_text(bus0route, t->value->cstring);
+			static char route0buffer[16];
+    	snprintf(route0buffer, sizeof(route0buffer), "%s", t->value->cstring);
+			text_layer_set_text(bus0route, route0buffer);
 		}
 
 		if (key == MsgKeyName0) {
-			bus0[1] = t->value->cstring;
-			text_layer_set_text(bus0name, bus0[1]);
+			// bus0[1] = t->value->cstring;
+			// text_layer_set_text(bus0name, t->value->cstring);
+			static char name0buffer[16];
+    	snprintf(name0buffer, sizeof(name0buffer), "%s", t->value->cstring);
+			text_layer_set_text(bus0name, name0buffer);
 		}
 
 		if (key == MsgKeyCountdown0) {
-			bus0[2] = t->value->cstring;
-			text_layer_set_text(bus0countdown, bus0[2]);
+			// bus0[2] = t->value->cstring;
+			// text_layer_set_text(bus0countdown, t->value->cstring);
+			static char countdown0buffer[16];
+    	snprintf(countdown0buffer, sizeof(countdown0buffer), "%s", t->value->cstring);
+			text_layer_set_text(bus0countdown, countdown0buffer);
 		}
 
 		// Bus 1 info
 		if (key == MsgKeyRoute1) {
-			bus1[0] = t->value->cstring;
-			text_layer_set_text(bus1route, bus1[0]);
+			// bus1[0] = t->value->cstring;
+			// text_layer_set_text(bus1route, t->value->cstring);
+			static char route1buffer[16];
+    	snprintf(route1buffer, sizeof(route1buffer), "%s", t->value->cstring);
+			text_layer_set_text(bus1route, route1buffer);
 		}
 
 		if (key == MsgKeyName1) {
-			bus1[1] = t->value->cstring;
-			text_layer_set_text(bus1name, bus1[1]);
+			// bus1[1] = t->value->cstring;
+			// text_layer_set_text(bus1name, t->value->cstring);
+			static char name1buffer[128];
+    	snprintf(name1buffer, sizeof(name1buffer), "%s", t->value->cstring);
+			text_layer_set_text(bus1name, name1buffer);
 		}
 
 		if (key == MsgKeyCountdown1) {
-			bus1[2] = t->value->cstring;
-			text_layer_set_text(bus1countdown, strcat(bus1[2], " minutes"));
+			// bus1[2] = t->value->cstring;
+			// text_layer_set_text(bus1countdown, strcat(t->value->cstring, " minutes"));
+			static char countdown1buffer[16];
+    	snprintf(countdown1buffer, sizeof(countdown1buffer), "%s", t->value->cstring);
+			text_layer_set_text(bus1countdown, strcat(countdown1buffer, " minutes"));
 		}
 
 		// Bus 2 info
 		if (key == MsgKeyRoute2) {
-			bus2[0] = t->value->cstring;
+			APP_LOG(APP_LOG_LEVEL_INFO, "Received route2");
+			// bus2[0] = t->value->cstring;
+			// text_layer_set_text(bus2route, bus2[0]);
+			static char route2buffer[16];
+    	snprintf(route2buffer, sizeof(route2buffer), "%s", t->value->cstring);
+			text_layer_set_text(bus2route, route2buffer);
 		}
 
-		if (key == MsgKeyName0) {
-			bus2[1] = t->value->cstring;
+		if (key == MsgKeyName2) {
+			APP_LOG(APP_LOG_LEVEL_INFO, "Received name2");
+			// bus2[1] = t->value->cstring;
+			// text_layer_set_text(bus2name, bus2[1]);
+			static char name2buffer[128];
+    	snprintf(name2buffer, sizeof(name2buffer), "%s", t->value->cstring);
+			text_layer_set_text(bus2name, name2buffer);
 		}
 
-		if (key == MsgKeyCountdown0) {;
-			bus0[2] = t->value->cstring;
+		if (key == MsgKeyCountdown2) {
+			APP_LOG(APP_LOG_LEVEL_INFO, "Received cd2");
+			// bus0[2] = t->value->cstring;
+			// text_layer_set_text(bus2countdown, strcat(bus2[2], " minutes"));
+			static char countdown2buffer[16];
+    	snprintf(countdown2buffer, sizeof(countdown2buffer), "%s", t->value->cstring);
+			text_layer_set_text(bus2countdown, strcat(countdown2buffer, " minutes"));
 		}
 
 		t = dict_read_next(iter);

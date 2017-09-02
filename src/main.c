@@ -50,6 +50,24 @@ static void loading_update_proc(Layer *layer, GContext *ctx) {
 	graphics_draw_bitmap_in_rect(ctx, loading_icon_bitmap, gbitmap_get_bounds(loading_icon_bitmap));
 }
 
+int get_content_height() {
+  int height = 0;
+
+  height += text_layer_get_content_size(bus0route).h
+    + text_layer_get_content_size(bus0name).h
+    + text_layer_get_content_size(bus0countdown).h
+    + text_layer_get_content_size(min_txt_layer).h
+    + text_layer_get_content_size(bus1route).h
+    + text_layer_get_content_size(bus1name).h
+    + text_layer_get_content_size(bus1countdown).h
+    + text_layer_get_content_size(bus2route).h
+    + text_layer_get_content_size(bus2name).h
+    + text_layer_get_content_size(bus2countdown).h;
+
+  APP_LOG(APP_LOG_LEVEL_INFO, "Total height: %d", height);
+  return height;
+}
+
 void size_layers() {
 	// GRect bounds = layer_get_bounds(window_get_root_layer(bus_window));
 	// GSize route_number_size = text_layer_get_content_size(route_number_layer);
@@ -81,6 +99,10 @@ void size_layers() {
   GSize route1size = text_layer_get_content_size(bus1route);
   GSize name1size = text_layer_get_content_size(bus1name);
   GSize countdown1size = text_layer_get_content_size(bus1countdown);
+
+  GSize route2size = text_layer_get_content_size(bus2route);
+  GSize name2size = text_layer_get_content_size(bus2name);
+  GSize countdown2size = text_layer_get_content_size(bus2countdown);
 
   // Bus 0
   layer_set_frame(text_layer_get_layer(bus0route), GRect(
@@ -138,6 +160,33 @@ void size_layers() {
     bounds.size.w - 5,
     countdown1size.h
   ));
+  GRect countdown1grect = layer_get_frame(text_layer_get_layer(bus1countdown));
+
+  // Bus 2
+  layer_set_frame(text_layer_get_layer(bus2route), GRect(
+    5,
+    countdown1grect.origin.y + countdown1size.h + 10,
+    bounds.size.w - 5,
+    route2size.h
+  ));
+  GRect route2grect = layer_get_frame(text_layer_get_layer(bus2route));
+
+  layer_set_frame(text_layer_get_layer(bus2name), GRect(
+    5,
+    route2grect.origin.y + route2size.h,
+    bounds.size.w - 5,
+    name2size.h
+  ));
+  GRect name2grect = layer_get_frame(text_layer_get_layer(bus2name));
+
+  layer_set_frame(text_layer_get_layer(bus2countdown), GRect(
+    5,
+    name2grect.origin.y + name2size.h,
+    bounds.size.w - 5,
+    countdown2size.h
+  ));
+
+  scroll_layer_set_content_size(scroll_layer, GSize(bounds.size.w, get_content_height() + 48));
 }
 
 static void loading_window_load(Window *window) {

@@ -11,7 +11,9 @@ TextLayer *bus2route, *bus2name, *bus2countdown;
 TextLayer *min_txt_layer;
 AppTimer *comm_timer;
 
+
 int stop_number;
 
+int get_content_height();
 void size_layers();
 void timeout_callback();

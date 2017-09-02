@@ -6,6 +6,7 @@ ScrollLayer *scroll_layer;
 ContentIndicator *indicator;
 Layer *up_indicator_layer, *down_indicator_layer;
 
+
 static void up_click(ClickRecognizerRef recognizer, void *context) {}
 
 static void down_click(ClickRecognizerRef recognizer, void *context) {}
@@ -158,21 +159,46 @@ void bus_window_load(Window *window) {
 	text_layer_set_font(bus1route, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
 	text_layer_set_background_color(bus1route, GColorClear);
 	text_layer_set_text_color(bus1route, GColorWhite);
+	text_layer_set_text_alignment(bus1route, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
 	scroll_layer_add_child(scroll_layer, text_layer_get_layer(bus1route));
 
 	bus1name = text_layer_create(GRect(0, 0, bounds.size.w, bounds.size.h));
 	text_layer_set_font(bus1name, fonts_get_system_font(FONT_KEY_GOTHIC_18));
 	text_layer_set_background_color(bus1name, GColorClear);
 	text_layer_set_text_color(bus1name, GColorWhite);
+	text_layer_set_text_alignment(bus1name, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
 	scroll_layer_add_child(scroll_layer, text_layer_get_layer(bus1name));
 
 	bus1countdown = text_layer_create(GRect(0, 0, bounds.size.w, bounds.size.h));
 	text_layer_set_font(bus1countdown, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
 	text_layer_set_background_color(bus1countdown, GColorClear);
 	text_layer_set_text_color(bus1countdown, GColorWhite);
+	text_layer_set_text_alignment(bus1countdown, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
 	scroll_layer_add_child(scroll_layer, text_layer_get_layer(bus1countdown));
 
-	scroll_layer_set_content_size(scroll_layer, GSize(bounds.size.w, bounds.size.h * 2));
+	// Bus 2
+	bus2route = text_layer_create(GRect(0, 0, bounds.size.w, bounds.size.h));
+	text_layer_set_font(bus2route, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
+	text_layer_set_background_color(bus2route, GColorClear);
+	text_layer_set_text_color(bus2route, GColorWhite);
+	text_layer_set_text_alignment(bus2route, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
+	scroll_layer_add_child(scroll_layer, text_layer_get_layer(bus2route));
+
+	bus2name = text_layer_create(GRect(0, 0, bounds.size.w, bounds.size.h));
+	text_layer_set_font(bus2name, fonts_get_system_font(FONT_KEY_GOTHIC_18));
+	text_layer_set_background_color(bus2name, GColorClear);
+	text_layer_set_text_color(bus2name, GColorWhite);
+	text_layer_set_text_alignment(bus2name, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
+	scroll_layer_add_child(scroll_layer, text_layer_get_layer(bus2name));
+
+	bus2countdown = text_layer_create(GRect(0, 0, bounds.size.w, bounds.size.h));
+	text_layer_set_font(bus2countdown, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
+	text_layer_set_background_color(bus2countdown, GColorClear);
+	text_layer_set_text_color(bus2countdown, GColorWhite);
+	text_layer_set_text_alignment(bus2countdown, PBL_IF_ROUND_ELSE(GTextAlignmentCenter, GTextAlignmentLeft));
+	scroll_layer_add_child(scroll_layer, text_layer_get_layer(bus2countdown));
+
+
 }
 
 void bus_window_unload(Window *window) {
